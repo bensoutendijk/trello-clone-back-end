@@ -4,7 +4,7 @@ import auth from '../../../auth';
 import Card from '../../../models/Card';
 import LocalUser from '../../../models/LocalUser';
 import Board from '../../../models/Board';
-import Category, { CategoryUpdateProperties } from '../../../models/Category';
+import Category from '../../../models/Category';
 
 const router = express.Router();
 
@@ -96,6 +96,10 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
   const { user, params } = req;
 
   try {
+    /*
+    // Fetch the required data
+    */
+
     const category = await Category.findOne({
       _id: params.categoryid,
       archived: false,
@@ -119,6 +123,10 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
       throw new Error('board not found');
     }
 
+    /*
+    // Modify and save the data to update the database
+    */
+
     Object.assign(category, {
       archived: true,
     });
@@ -128,6 +136,10 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
         categories: category._id,
       },
     }, { new: true });
+
+    await Card.updateMany({
+      _id: { $in: category.cards },
+    }, { archived: true });
 
     await category.save();
     return res.status(200).send({ category, board });
