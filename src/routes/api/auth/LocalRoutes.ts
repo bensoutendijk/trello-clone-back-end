@@ -48,11 +48,11 @@ router.post('/', ...auth.optional, async (req, res) => {
         user: 'Something went wrong',
       });
     }
-    res.cookie('token', `Token ${finalUser.generateHttpOnlyJWT()}`, {
+    res.cookie('httpOnlyToken', `Token ${finalUser.generateHttpOnlyJWT()}`, {
       expires: new Date(Date.now() + 1000 * 60 * 30),
       httpOnly: true,
     });
-    res.cookie('token2', `Token ${finalUser.generateJWT()}`, {
+    res.cookie('token', `Token ${finalUser.generateJWT()}`, {
       expires: new Date(Date.now() + 1000 * 60 * 30),
     });
     return res.json(finalUser.toJSON());
@@ -103,21 +103,26 @@ router.post('/login', ...auth.optional, (req, res, next) => {
 // GET current route (required, only authenticated users have access)
 router.get('/current', ...auth.required, async (req: Request, res: Response) => {
   const { user } = req;
-  const localUser = await LocalUser.findOne({ id: user.id });
 
-  if (localUser === null) {
-    throw new Error('user not found');
+  try {
+    const localUser = await LocalUser.findOne({ id: user.id });
+
+    if (localUser === null) {
+      throw new Error('user not found');
+    }
+
+    res.cookie('httpOnlyToken', `Token ${localUser.generateHttpOnlyJWT()}`, {
+      expires: new Date(Date.now() + 1000 * 60 * 30),
+      httpOnly: true,
+    });
+    res.cookie('token', `Token ${localUser.generateJWT()}`, {
+      expires: new Date(Date.now() + 1000 * 60 * 30),
+    });
+
+    return res.json(localUser.toJSON());
+  } catch (error) {
+    return res.status(400).json(error.message);
   }
-
-  res.cookie('httpOnlyToken', `Token ${localUser.generateHttpOnlyJWT()}`, {
-    expires: new Date(Date.now() + 1000 * 60 * 30),
-    httpOnly: true,
-  });
-  res.cookie('token', `Token ${localUser.generateJWT()}`, {
-    expires: new Date(Date.now() + 1000 * 60 * 30),
-  });
-
-  return res.json(localUser.toJSON());
 });
 
 export default router;
