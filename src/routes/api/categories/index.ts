@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import auth from "../../../auth";
-import Card from "../../../models/Card";
-import LocalUser from "../../../models/LocalUser";
-import Board from "../../../models/Board";
-import Category, { CategoryUpdateProperties } from "../../../models/Category";
+import auth from '../../../auth';
+import Card from '../../../models/Card';
+import LocalUser from '../../../models/LocalUser';
+import Board from '../../../models/Board';
+import Category, { CategoryUpdateProperties } from '../../../models/Category';
 
 const router = express.Router();
 
@@ -44,6 +44,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
       updatedOn: new Date().getTime(),
       archived: false,
     });
+
     await category.save();
     board.categories.push(category._id);
     await board.save();
@@ -82,7 +83,7 @@ router.post('/:categoryid', ...auth.required, async (req: Request, res: Response
     }, {
       ...body,
       updatedOn: new Date(),
-    });
+    }, { new: true });
 
     return res.status(200).send(category);
   } catch (error) {

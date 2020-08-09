@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import auth from "../../../auth";
-import Card from "../../../models/Card";
-import LocalUser from "../../../models/LocalUser";
-import Board, { BoardForm } from "../../../models/Board";
-import Category from "../../../models/Category";
+import auth from '../../../auth';
+import Card from '../../../models/Card';
+import LocalUser from '../../../models/LocalUser';
+import Board, { BoardForm } from '../../../models/Board';
+import Category from '../../../models/Category';
 
 const router = express.Router();
 
@@ -26,14 +26,13 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 
     const board = new Board({
       title: body.title,
+      categories: [],
+      members: [ { id: user._id, scopes: ['admin']} ],
       createdOn: new Date().getTime(),
       updatedOn: new Date().getTime(),
-      members: [ { id: user._id, scopes: ['admin']} ],
-      categories: [],
-      cards: [],
       archived: false,
     });
-    
+
     await board.save();
     return res.status(200).send(board);
   } catch (error) {
@@ -47,7 +46,7 @@ router.get('/', ...auth.required, async (req: Request, res: Response): Promise<R
 
   try {
     const boards = await Board.find({
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -68,7 +67,7 @@ router.get('/:boardid', ...auth.required, async (req: Request, res: Response): P
   try {
     const board = await Board.findOne({
       _id: params.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -80,15 +79,17 @@ router.get('/:boardid', ...auth.required, async (req: Request, res: Response): P
       throw new Error('board not found');
     }
 
-    const cards = await Card.find({
-      _id: { $in: board.cards },
-    });
-
     const categories = await Category.find({
       _id: { $in: board.categories },
     });
 
-    categories.sort((a, b) => board.categories.indexOf(a._id) - board.categories.indexOf(b._id));
+    const cards = await Card.find({
+      _id: { $in: categories.reduce<string[]>((a, b) => a.concat(...b.cards), []) },
+    });
+
+    // We should not have to sort these. Order will be dirived from the arrays on board/category objects
+    // categories.sort((a, b) => board.categories.indexOf(a._id) - board.categories.indexOf(b._id));
+    // cards.sort((a, b) => board.cards.indexOf(a._id) - board.cards.indexOf(b._id));
 
     return res.status(200).send({
       board,
@@ -105,9 +106,9 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
   const { user, body, params } = req;
 
   try {
-    const board = await Board.findOneAndUpdate({ 
+    const board = await Board.findOneAndUpdate({
       _id: params.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id, scopes: 'admin',
         },
@@ -133,9 +134,9 @@ router.delete('/:boardid', ...auth.required, async (req: Request, res: Response)
   const { user, params } = req;
 
   try {
-    const board = await Board.findOne({ 
+    const board = await Board.findOne({
       _id: params.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id, scopes: 'admin',
         },

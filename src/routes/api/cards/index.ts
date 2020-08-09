@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import auth from "../../../auth";
-import Card, { CardUpdateProperties } from "../../../models/Card";
-import LocalUser from "../../../models/LocalUser";
-import Board from "../../../models/Board";
-import Category from "../../../models/Category";
+import auth from '../../../auth';
+import Card, { CardUpdateProperties } from '../../../models/Card';
+import LocalUser from '../../../models/LocalUser';
+import Board from '../../../models/Board';
+import Category from '../../../models/Category';
 
 const router = express.Router();
 
@@ -33,8 +33,18 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
       },
       archived: false,
     });
+
     if (board === null) {
       throw new Error('board not found');
+    }
+
+    const category = await Category.findOne({
+      _id: body.categoryid,
+      archived: false,
+    });
+
+    if (category === null) {
+      throw new Error('category not found');
     }
 
     const card = new Card({
@@ -46,12 +56,16 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
       boardid: body.boardid,
       archived: false,
     });
-    board.cards.push(card._id);
 
-    await board.save();
+    category.cards.push(card._id);
+
+    await category.save();
     await card.save();
 
-    return res.status(200).send(card.toJSON());
+    return res.status(200).send({
+      card: card.toJSON(),
+      category: category.toJSON(),
+    });
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
