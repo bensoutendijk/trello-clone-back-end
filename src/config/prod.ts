@@ -5,7 +5,7 @@ export default {
   jwtKey: process.env.JWT_SECRET,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  googleCallbackUrl: 'https://app.takeoff.soutendijk.com/api/auth/google/callback',
+  googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL,
 };
 
 
