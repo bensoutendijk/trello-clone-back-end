@@ -105,7 +105,7 @@ router.get('/current', ...auth.required, async (req: Request, res: Response) => 
   const { user } = req;
 
   try {
-    const localUser = await LocalUser.findOne({ id: user.id });
+    const localUser = await LocalUser.findOne({ _id: user._id });
 
     if (localUser === null) {
       throw new Error('user not found');
