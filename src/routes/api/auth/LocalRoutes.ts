@@ -45,7 +45,7 @@ router.post('/', ...auth.optional, async (req, res) => {
       await finalUser.save();
     } catch (err) {
       return res.json({
-        user: 'Something went wrong',
+        authentication: 'Something went wrong. Please try again later.',
       });
     }
     res.cookie('httpOnlyToken', `Token ${finalUser.generateHttpOnlyJWT()}`, {
