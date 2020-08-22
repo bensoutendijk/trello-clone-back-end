@@ -95,7 +95,7 @@ router.post('/login', ...auth.optional, (req, res, next) => {
     }
 
     return res.status(422).json({
-      authentication: 'email not registered',
+      authentication: 'Email and password combination not recognized.',
     });
   })(req, res, next);
 });
