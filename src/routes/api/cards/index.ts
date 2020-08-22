@@ -175,19 +175,26 @@ router.delete('/:cardid', ...auth.required, async (req: Request, res: Response):
     if (board === null) {
       throw new Error('board not found');
     }
+
     Object.assign(card, {
       archived: true,
     });
-    await Board.updateOne({
-      _id: card.boardid,
-    }, {
+
+    const category = await Category.findByIdAndUpdate(card.categoryid, {
       $pull: {
         cards: card._id,
       },
-    });
+    }, { new: true });
+
+    if (!category) {
+      throw new Error('unable to update category');
+    }
 
     await card.save();
-    return res.status(200).send(card);
+    return res.status(200).send({
+      card: card.toJSON(),
+      category: category.toJSON(),
+    });
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
