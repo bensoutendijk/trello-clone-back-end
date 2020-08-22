@@ -49,11 +49,11 @@ router.post('/', ...auth.optional, async (req, res) => {
       });
     }
     res.cookie('httpOnlyToken', `Token ${finalUser.generateHttpOnlyJWT()}`, {
-      expires: new Date(Date.now() + 1000 * 60 * 30),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
       httpOnly: true,
     });
     res.cookie('token', `Token ${finalUser.generateJWT()}`, {
-      expires: new Date(Date.now() + 1000 * 60 * 30),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
     });
     return res.json(finalUser.toJSON());
   }
@@ -85,11 +85,11 @@ router.post('/login', ...auth.optional, (req, res, next) => {
 
     if (passportUser) {
       res.cookie('httpOnlyToken', `Token ${passportUser.generateHttpOnlyJWT()}`, {
-        expires: new Date(Date.now() + 1000 * 60 * 30),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
         httpOnly: true,
       });
       res.cookie('token', `Token ${passportUser.generateJWT()}`, {
-        expires: new Date(Date.now() + 1000 * 60 * 30),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
       });
       return res.json(passportUser.toJSON());
     }
@@ -112,11 +112,11 @@ router.get('/current', ...auth.required, async (req: Request, res: Response) => 
     }
 
     res.cookie('httpOnlyToken', `Token ${localUser.generateHttpOnlyJWT()}`, {
-      expires: new Date(Date.now() + 1000 * 60 * 30),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
       httpOnly: true,
     });
     res.cookie('token', `Token ${localUser.generateJWT()}`, {
-      expires: new Date(Date.now() + 1000 * 60 * 30),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
     });
 
     return res.json(localUser.toJSON());
