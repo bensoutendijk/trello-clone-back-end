@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import passport from 'passport';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import auth from '../../../auth';
 import { LocalUser } from '../../../models/LocalUser';
 
@@ -8,7 +8,7 @@ const router = express.Router();
 const LocalUser = mongoose.model<LocalUser>('LocalUser');
 
 // POST new user route (optional, everyone has access)
-router.post('/', ...auth.optional, async (req, res) => {
+router.post('/', ...auth.optional, async (req: Request, res: Response) => {
   const { body: user } = req;
 
   if (!user.email) {
@@ -63,7 +63,7 @@ router.post('/', ...auth.optional, async (req, res) => {
 });
 
 // POST login route (optional, everyone has access)
-router.post('/login', ...auth.optional, (req, res, next) => {
+router.post('/login', ...auth.optional, (req: Request, res: Response, next: NextFunction) => {
   const { body: user } = req;
 
   if (!user.email) {
