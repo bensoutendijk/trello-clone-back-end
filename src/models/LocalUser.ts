@@ -38,7 +38,7 @@ userSchema.methods.validatePassword = function validatePassword(password: string
 userSchema.methods.generateHttpOnlyJWT = function generateHttpOnlyJWT(): string {
   const today = new Date();
   const expirationDate = new Date(today);
-  expirationDate.setTime(today.getTime() + 1000 * 60 * 30);
+  expirationDate.setTime(today.getTime() + (1000 * 60 * 60 * 24 * 30));
 
   return jwt.sign({
     email: this.email,
@@ -52,7 +52,7 @@ userSchema.methods.generateHttpOnlyJWT = function generateHttpOnlyJWT(): string 
 userSchema.methods.generateJWT = function generateJWT(): string {
   const today: Date = new Date();
   const expirationDate: Date = new Date(today);
-  expirationDate.setTime(today.getTime() + 1000 * 60 * 30);
+  expirationDate.setTime(today.getTime() + (1000 * 60 * 60 * 24 * 30));
 
   return jwt.sign({
     email: this.email,
