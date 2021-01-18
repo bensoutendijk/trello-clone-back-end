@@ -1,6 +1,14 @@
 import jwt, { GetTokenCallback } from 'express-jwt';
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 
+if (typeof process.env.JWT_SECRET_HTTP === 'undefined') {
+  throw new Error('JWT_SECRET_HTTP is undefined');
+}
+
+if (typeof process.env.JWT_SECRET === 'undefined') {
+  throw new Error('JWT_SECRET is undefined');
+}
+
 const handleErrorMiddleware: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === 'UnauthorizedError' ) {
     return res.status(err.status).send(err.inner);

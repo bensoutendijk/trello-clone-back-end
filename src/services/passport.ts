@@ -4,6 +4,18 @@ import * as passportLocal from 'passport-local';
 import * as passportGoogle from 'passport-google-oauth';
 import { LocalUser } from '../models/LocalUser';
 
+if (typeof process.env.GOOGLE_CLIENT_ID === 'undefined') {
+  throw new Error('GOOGLE_CLIENT_ID is undefined');
+}
+
+if (typeof process.env.GOOGLE_CLIENT_SECRET === 'undefined') {
+  throw new Error('GOOGLE_CLIENT_SECRET is undefined');
+}
+
+if (typeof process.env.GOOGLE_CALLBACK_URL === 'undefined') {
+  throw new Error('GOOGLE_CALLBACK_URL is undefined');
+}
+
 const LocalUser = mongoose.model<LocalUser>('LocalUser');
 
 passport.serializeUser((user, done) => {

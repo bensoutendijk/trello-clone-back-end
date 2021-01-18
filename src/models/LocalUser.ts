@@ -35,6 +35,10 @@ userSchema.methods.validatePassword = function validatePassword(password: string
 };
 
 userSchema.methods.generateHttpOnlyJWT = function generateHttpOnlyJWT(): string {
+  if (typeof process.env.JWT_SECRET_HTTP === 'undefined') {
+    throw new Error('JWT_SECRET_HTTP is undefined');
+  }
+
   const today = new Date();
   const expirationDate = new Date(today);
   expirationDate.setTime(today.getTime() + (1000 * 60 * 60 * 24 * 30));
@@ -49,6 +53,10 @@ userSchema.methods.generateHttpOnlyJWT = function generateHttpOnlyJWT(): string 
 };
 
 userSchema.methods.generateJWT = function generateJWT(): string {
+  if (typeof process.env.JWT_SECRET === 'undefined') {
+    throw new Error('JWT_SECRET is undefined');
+  }
+
   const today: Date = new Date();
   const expirationDate: Date = new Date(today);
   expirationDate.setTime(today.getTime() + (1000 * 60 * 60 * 24 * 30));

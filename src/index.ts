@@ -11,6 +11,10 @@ import passport from 'passport';
 require('dotenv').config(path.resolve(__dirname, '../.env'));
 
 // Connect to Database
+if (typeof process.env.MONGO_URI === 'undefined') {
+  throw new Error('MONGO_URI is undefined');
+}
+
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useFindAndModify: false });
 require('./models/LocalUser');
