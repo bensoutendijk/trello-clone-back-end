@@ -2,10 +2,7 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as passportGoogle from 'passport-google-oauth';
-import keys from '../config/keys';
 import { LocalUser } from '../models/LocalUser';
-
-const { googleClientId, googleClientSecret, googleCallbackUrl } = keys;
 
 const LocalUser = mongoose.model<LocalUser>('LocalUser');
 
@@ -42,9 +39,9 @@ passport.use(new passportLocal.Strategy({
 }));
 
 passport.use(new passportGoogle.OAuth2Strategy({
-  clientID: googleClientId,
-  clientSecret: googleClientSecret,
-  callbackURL: googleCallbackUrl,
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL,
 }, (accessToken, refreshToken, profile, done) => {
   const oauthUser = {
     _id: profile.id,

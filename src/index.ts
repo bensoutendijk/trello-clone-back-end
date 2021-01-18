@@ -6,16 +6,13 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
-import keys from './config/keys';
 
-// Load production environment variables
-if (process.env.NODE_ENV === 'production') {
-  require('dotenv').config(path.resolve(__dirname, '../'));
-}
+// Load Environment Variables
+require('dotenv').config(path.resolve(__dirname, '../.env'));
 
 // Connect to Database
 mongoose.Promise = global.Promise;
-mongoose.connect(keys.mongoURI, { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useFindAndModify: false });
 require('./models/LocalUser');
 require('./models/OAuthUser');
 require('./models/Card');

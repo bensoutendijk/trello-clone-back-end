@@ -1,5 +1,4 @@
 import jwt, { GetTokenCallback } from 'express-jwt';
-import keys from './config/keys';
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 
 const handleErrorMiddleware: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
@@ -29,12 +28,12 @@ const getToken: GetTokenCallback = (req) => {
 const auth = {
   required: [
     jwt({
-      secret: keys.jwtHttpOnlyKey,
+      secret: process.env.JWT_SECRET_HTTP,
       userProperty: 'user',
       getToken: getHttpOnlyToken,
     }),
     jwt({
-      secret: keys.jwtKey,
+      secret: process.env.JWT_SECRET,
       userProperty: 'user',
       getToken,
     }),
@@ -42,13 +41,13 @@ const auth = {
   ],
   optional: [
     jwt({
-      secret: keys.jwtHttpOnlyKey,
+      secret: process.env.JWT_SECRET_HTTP,
       userProperty: 'user',
       getToken: getHttpOnlyToken,
       credentialsRequired: false,
     }),
     jwt({
-      secret: keys.jwtKey,
+      secret: process.env.JWT_SECRET,
       userProperty: 'user',
       getToken,
       credentialsRequired: false,

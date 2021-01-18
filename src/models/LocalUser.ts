@@ -2,7 +2,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import keys from '../config/keys';
 
 export interface LocalUser extends Document {
   email: string;
@@ -46,7 +45,7 @@ userSchema.methods.generateHttpOnlyJWT = function generateHttpOnlyJWT(): string 
     permissions: this.permissions,
     services: this.services,
     exp: Math.floor(expirationDate.getTime() / 1000),
-  }, keys.jwtHttpOnlyKey);
+  }, process.env.JWT_SECRET_HTTP);
 };
 
 userSchema.methods.generateJWT = function generateJWT(): string {
@@ -60,7 +59,7 @@ userSchema.methods.generateJWT = function generateJWT(): string {
     permissions: this.permissions,
     services: this.services,
     exp: Math.floor(expirationDate.getTime() / 1000),
-  }, keys.jwtKey);
+  }, process.env.JWT_SECRET);
 };
 
 userSchema.methods.toJSON = function toJSON() {
