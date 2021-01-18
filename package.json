@@ -8,6 +8,7 @@
     "build": "tsc",
     "dev": "nodemon --watch src --exec \"npm run build && npm start\" --verbose -e ts",
     "start": "node build/index.js",
+    "prod": "NODE_ENV=production node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix src/**/*.ts"
   },
@@ -30,6 +31,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "dotenv": "^8.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^6.0.0",
