@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "rimraf build",
     "build": "tsc",
     "dev": "nodemon --watch src --exec \"npm run build && npm start\" --verbose -e ts",
     "start": "node build/index.js",
