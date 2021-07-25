@@ -18,7 +18,7 @@ if (typeof process.env.MONGO_URI === 'undefined') {
 mongoose.Promise = global.Promise;
 mongoose
   .connect(
-    'mongodb://mongo:27017/docker-node-mongo',
+    process.env.MONGO_URI,
     { useNewUrlParser: true }
   )
   .then(() => console.log('MongoDB Connected'))
